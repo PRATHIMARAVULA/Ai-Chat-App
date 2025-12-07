@@ -1,36 +1,38 @@
 import express from "express";
 import cors from "cors";
 import fs from "fs";
+import path from "path";
 import dotenv from "dotenv";
 import OpenAI from "openai";
-import path from "path";
 import { fileURLToPath } from "url";
 
+// ===== Load Environment Variables =====
 dotenv.config();
 
+// ===== Setup Express App =====
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// OpenAI setup
+// ===== OpenAI Configuration =====
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// ===== PORT =====
+// ===== Port Configuration =====
 const PORT = process.env.PORT || 5000;
 
-// ===== Chat History Setup =====
+// ===== File Paths =====
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const DB_FILE = path.join(__dirname, "chat.json");
 
-// Initialize chat.json if not exists
+// ===== Initialize chat.json if missing =====
 if (!fs.existsSync(DB_FILE)) {
   fs.writeFileSync(DB_FILE, JSON.stringify([]));
 }
 
-// Load chat history
+// ===== Chat History Utilities =====
 const loadChatHistory = () => {
   try {
     const data = fs.readFileSync(DB_FILE, "utf-8");
@@ -41,7 +43,6 @@ const loadChatHistory = () => {
   }
 };
 
-// Save chat history
 const saveChatHistory = (history) => {
   try {
     fs.writeFileSync(DB_FILE, JSON.stringify(history, null, 2));
@@ -59,7 +60,7 @@ app.post("/api/chat", async (req, res) => {
     return res.status(400).json({ error: "Message cannot be empty" });
   }
 
-  let chatHistory = loadChatHistory();
+  const chatHistory = loadChatHistory();
   chatHistory.push({ sender: "user", text: userMessage });
   console.log("User:", userMessage);
 
@@ -77,26 +78,25 @@ app.post("/api/chat", async (req, res) => {
     saveChatHistory(chatHistory);
 
     console.log("AI:", aiText);
-
-    // Return full chat history (assessment-friendly)
     return res.json({ chatHistory });
-  } catch (error) {
-    console.error("OpenAI Error:", error);
+  } catch (err) {
+    console.error("OpenAI Error:", err);
     return res.status(500).json({ error: "Failed to get AI response" });
   }
 });
 
-// GET: Full chat history
+// GET: Retrieve full chat history
 app.get("/api/history", (req, res) => {
   const history = loadChatHistory();
   res.json(history);
 });
 
 // ===== Serve React Frontend =====
-app.use(express.static(path.join(__dirname, "front", "build")));
+const FRONTEND_BUILD_PATH = path.join(__dirname, "front", "build");
+app.use(express.static(FRONTEND_BUILD_PATH));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "front", "build", "index.html"));
+  res.sendFile(path.join(FRONTEND_BUILD_PATH, "index.html"));
 });
 
 // ===== Start Server =====

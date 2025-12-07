@@ -3,15 +3,14 @@
   "version": "1.0.0",
   "type": "module",
   "main": "server.js",
- "scripts": {
-  "start": "node server.js",
-  "start:front": "cd front && npm start",
-  "dev": "concurrently \"npm run start\" \"npm run start:front\""
-}
-,
+  "scripts": {
+    "start": "node server.js",
+    "start:front": "cd front && npm start",
+    "dev": "concurrently \"npm run start\" \"npm run start:front\""
+  },
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.6.1",
     "express": "^4.19.2",
     "openai": "^4.57.0"
   },
