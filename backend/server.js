@@ -6,39 +6,38 @@ import dotenv from "dotenv";
 import OpenAI from "openai";
 import { fileURLToPath } from "url";
 
-// ===== Load Environment Variables =====
+// Load .env
 dotenv.config();
 
-// ===== Setup Express App =====
+// Setup Express
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ===== OpenAI Configuration =====
+// OpenAI Config
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// ===== Port Configuration =====
+// Port
 const PORT = process.env.PORT || 5000;
 
-// ===== File Paths =====
+// File Paths
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const DB_FILE = path.join(__dirname, "chat.json");
 
-// ===== Initialize chat.json if missing =====
+// Create chat.json if not exists
 if (!fs.existsSync(DB_FILE)) {
   fs.writeFileSync(DB_FILE, JSON.stringify([]));
 }
 
-// ===== Chat History Utilities =====
+// Load/Save Utilities
 const loadChatHistory = () => {
   try {
-    const data = fs.readFileSync(DB_FILE, "utf-8");
-    return JSON.parse(data);
+    return JSON.parse(fs.readFileSync(DB_FILE, "utf-8"));
   } catch (err) {
-    console.error("Error reading chat history:", err);
+    console.error("Chat load error:", err);
     return [];
   }
 };
@@ -47,13 +46,13 @@ const saveChatHistory = (history) => {
   try {
     fs.writeFileSync(DB_FILE, JSON.stringify(history, null, 2));
   } catch (err) {
-    console.error("Error saving chat history:", err);
+    console.error("Chat save error:", err);
   }
 };
 
-// ===== API Routes =====
+// ===== API ROUTES =====
 
-// POST: User sends message
+// POST: CHAT MESSAGE
 app.post("/api/chat", async (req, res) => {
   const userMessage = req.body.message?.trim();
   if (!userMessage) {
@@ -62,11 +61,10 @@ app.post("/api/chat", async (req, res) => {
 
   const chatHistory = loadChatHistory();
   chatHistory.push({ sender: "user", text: userMessage });
-  console.log("User:", userMessage);
 
   try {
     const aiReply = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4o-mini",   // ⭐ IMPORTANT LINE
       messages: chatHistory.map((m) => ({
         role: m.sender === "ai" ? "assistant" : "user",
         content: m.text,
@@ -77,30 +75,28 @@ app.post("/api/chat", async (req, res) => {
     chatHistory.push({ sender: "ai", text: aiText });
     saveChatHistory(chatHistory);
 
-    console.log("AI:", aiText);
     return res.json({ chatHistory });
-  } catch (err) {
-    console.error("OpenAI Error:", err);
-    return res.status(500).json({ error: "Failed to get AI response" });
+  } catch (error) {
+    console.error("OpenAI API error:", error);
+    return res.status(500).json({ error: "AI response failed" });
   }
 });
 
-// GET: Retrieve full chat history
+// GET: HISTORY
 app.get("/api/history", (req, res) => {
-  const history = loadChatHistory();
-  res.json(history);
+  res.json(loadChatHistory());
 });
 
-// ===== Serve React Frontend =====
-// ===== Serve React Frontend =====
+// ===== SERVE REACT FRONTEND =====
 const FRONTEND_BUILD_PATH = path.join(__dirname, "../frontend/build");
+
 app.use(express.static(FRONTEND_BUILD_PATH));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(FRONTEND_BUILD_PATH, "index.html"));
 });
 
-// ===== Start Server =====
+// START SERVER
 app.listen(PORT, () => {
   console.log(`Backend running on port ${PORT}`);
 });
