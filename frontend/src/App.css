@@ -1,0 +1,118 @@
+/* App container with gradient background */
+.App {
+  text-align: center;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 20px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #74ebd5, #acb6e5);
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Header */
+h1 {
+  margin-bottom: 25px;
+  color: #fff;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Chat area */
+.chat-container {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 20px;
+  height: 450px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Chat bubbles */
+.chat-message {
+  padding: 12px 18px;
+  margin: 8px 0;
+  border-radius: 20px;
+  max-width: 75%;
+  word-wrap: break-word;
+  font-size: 16px;
+  line-height: 1.4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s;
+}
+
+.chat-message:hover {
+  transform: scale(1.02);
+}
+
+/* User messages */
+.user {
+  background-color: #0084ff;
+  color: white;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+/* AI messages */
+.ai {
+  background-color: #f1f0f0;
+  color: #333;
+  align-self: flex-start;
+  margin-right: auto;
+}
+
+/* Input area */
+.input-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+input {
+  flex: 1;
+  padding: 12px 18px;
+  border-radius: 25px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  margin-right: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+input:focus {
+  box-shadow: 0 0 0 3px rgba(0, 132, 255, 0.3);
+}
+
+/* Send button */
+button {
+  padding: 12px 25px;
+  border-radius: 25px;
+  border: none;
+  background-color: #0084ff;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+  background-color: #006bbd;
+  transform: scale(1.05);
+}
+
+/* Scrollbar styling for chat container */
+.chat-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.05);
+}
