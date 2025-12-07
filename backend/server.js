@@ -92,7 +92,8 @@ app.get("/api/history", (req, res) => {
 });
 
 // ===== Serve React Frontend =====
-const FRONTEND_BUILD_PATH = path.join(__dirname, "front", "build");
+// ===== Serve React Frontend =====
+const FRONTEND_BUILD_PATH = path.join(__dirname, "../frontend/build");
 app.use(express.static(FRONTEND_BUILD_PATH));
 
 app.get("*", (req, res) => {
