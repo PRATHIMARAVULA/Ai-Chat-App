@@ -7,20 +7,22 @@ function App() {
   const [chatHistory, setChatHistory] = useState([]);
   const messagesEndRef = useRef(null);
 
-  // Scroll to bottom automatically when chat updates
+  // Auto scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatHistory]);
 
-  // Fetch chat history on component mount
+  // Load history on mount
   useEffect(() => {
     fetchHistory();
   }, []);
 
   const fetchHistory = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/history");
-      setChatHistory(res.data); // backend returns full history
+      const res = await axios.get(
+        "https://ai-chat-app-xhhl.onrender.com/api/history"
+      );
+      setChatHistory(res.data);
     } catch (err) {
       console.error("Failed to load history:", err);
     }
@@ -30,11 +32,11 @@ function App() {
     if (!message.trim()) return;
 
     try {
-      const res = await axios.post("http://localhost:5000/api/chat", {
-        message: message,
-      });
+      const res = await axios.post(
+        "https://ai-chat-app-xhhl.onrender.com/api/chat",
+        { message }
+      );
 
-      // Backend returns full chat history
       setChatHistory(res.data.chatHistory);
       setMessage("");
     } catch (err) {
@@ -54,13 +56,18 @@ function App() {
         {chatHistory.map((msg, index) => (
           <div
             key={index}
-            className={msg.sender === "user" ? "chat-message user" : "chat-message ai"}
+            className={
+              msg.sender === "user"
+                ? "chat-message user"
+                : "chat-message ai"
+            }
           >
-            <b>{msg.sender === "user"}</b> {msg.text}
+            <b>{msg.sender === "user" ? "You:" : "AI:"}</b> {msg.text}
           </div>
         ))}
         <div ref={messagesEndRef} />
       </div>
+
       <div className="input-container">
         <input
           type="text"
