@@ -19,9 +19,7 @@ function App() {
 
   const fetchHistory = async () => {
     try {
-      const res = await axios.get(
-        "https://ai-chat-app-xhhl.onrender.com/api/history"
-      );
+      const res = await axios.get("/api/history"); // <<<<<< FIXED
       setChatHistory(res.data);
     } catch (err) {
       console.error("Failed to load history:", err);
@@ -32,11 +30,7 @@ function App() {
     if (!message.trim()) return;
 
     try {
-      const res = await axios.post(
-        "https://ai-chat-app-xhhl.onrender.com/api/chat",
-        { message }
-      );
-
+      const res = await axios.post("/api/chat", { message }); // <<<<<< FIXED
       setChatHistory(res.data.chatHistory);
       setMessage("");
     } catch (err) {
@@ -57,9 +51,7 @@ function App() {
           <div
             key={index}
             className={
-              msg.sender === "user"
-                ? "chat-message user"
-                : "chat-message ai"
+              msg.sender === "user" ? "chat-message user" : "chat-message ai"
             }
           >
             <b>{msg.sender === "user" ? "You:" : "AI:"}</b> {msg.text}
