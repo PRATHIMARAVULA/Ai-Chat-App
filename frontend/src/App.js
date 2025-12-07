@@ -54,7 +54,7 @@ function App() {
               msg.sender === "user" ? "chat-message user" : "chat-message ai"
             }
           >
-            <b>{msg.sender === "user" ? "You:" : "AI:"}</b> {msg.text}
+            <b>{msg.sender === "user"}</b> {msg.text}
           </div>
         ))}
         <div ref={messagesEndRef} />
